@@ -53,6 +53,48 @@ func (c *Client) Retrieve(path string, dest io.Writer) error {
 	return nil
 }
 
+// RetrieveWithOffset gets file "path" from server starting from offset "offset"
+// and write bytes to "dest". If the server supports resuming stream transfers,
+// Retrieve will continue resuming a failed download as long as it continues
+// making progress. Retrieve will also verify the file's size after the transfer
+// if the server supports the SIZE command.
+func (c *Client) RetrieveWithOffset(path string, offset int64, dest io.Writer) error {
+	// fetch file size to check against how much we transferred
+	size, err := c.size(path)
+	if err != nil {
+		return err
+	}
+
+	canResume := c.canResume()
+
+	var bytesSoFar int64 = offset
+	for {
+		n, err := c.transferFromOffset(path, dest, nil, bytesSoFar)
+
+		bytesSoFar += n
+
+		if err == nil {
+			break
+		} else if n == 0 {
+			return err
+		} else if !canResume {
+			return ftpError{
+				err:       fmt.Errorf("%s (can't resume)", err),
+				temporary: true,
+			}
+		}
+	}
+
+	if size != -1 && bytesSoFar != size {
+		return ftpError{
+			err:       fmt.Errorf("expected %d bytes, got %d", size, bytesSoFar),
+			temporary: true,
+		}
+	}
+
+	return nil
+}
+
 // Store bytes read from "src" into file "path" on the server. If the
 // server supports resuming stream transfers and "src" is an io.Seeker
 // (*os.File is an io.Seeker), Store will continue resuming a failed upload
