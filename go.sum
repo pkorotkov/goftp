@@ -1,0 +1,4 @@
+github.com/pkorotkov/goftp v0.0.0-20210325080443-f57aaed46a32 h1:kDn4lZRwvkxceCv+moydK4XFyxJJwKvq9B4pQGl/XXY=
+github.com/pkorotkov/goftp v0.0.0-20210325080443-f57aaed46a32/go.mod h1:kZFmxgH02ffGf2RgjOYix0l5YDWqZAGokBG3XRAE5yk=
+github.com/secsy/goftp v0.0.0-20200609142545-aa2de14babf4 h1:PT+ElG/UUFMfqy5HrxJxNzj3QBOf7dZwupeVC+mG1Lo=
+github.com/secsy/goftp v0.0.0-20200609142545-aa2de14babf4/go.mod h1:MnkX001NG75g3p8bhFycnyIjeQoOjGL6CEIsdE/nKSY=
